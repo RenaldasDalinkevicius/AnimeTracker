@@ -9,13 +9,14 @@ import { useSelector} from "react-redux"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Components/Layout";
 import Intro from "./Components/Intro";
+import LoginForm from "./LoginPage/LoginForm";
+import RegisterForm from "./LoginPage/RegisterForm";
 
     const MainDiv = styled.main`
     display: flex;
     flex-direction: column;
     `
     const AnimeMain = styled.div`
-
     `
     const AnimeUl = styled.ul`
     list-style: none;
@@ -102,27 +103,25 @@ export default function App () {
         <MainDiv>
             <GlobalStyle/>
             <BrowserRouter>
+            <Layout/>
                 <Routes>
-                    <Route path="/" element={<Layout/>}>
-                        <Route>
-                            <Route index element={
-                                loggedInUser?
-                                    <AnimeMain>
-                                        <AnimeUl>
-                                            {animeArr}
-                                        </AnimeUl>
-                                        <AnimeButton onClick={() => setPopUpToggle(!popUpToggle)}>
-                                            <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
-                                        </AnimeButton>
-                                        {popUpToggle&&<NewEntryMenu toggle={() => setPopUpToggle(!popUpToggle)}/>}
-                                    </AnimeMain>
-                                    :
-                                    <Intro/>
-                            }/>
-                            <Route path="login" element={<LoginForm/>}/>
-                            <Route path="register" element={<RegisterForm/>}/>
-                        </Route>
+                    <Route index element={
+                        loggedInUser?
+                            <AnimeMain>
+                                <AnimeUl>
+                                    {animeArr}
+                                </AnimeUl>
+                                <AnimeButton onClick={() => setPopUpToggle(!popUpToggle)}>
+                                    <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
+                                </AnimeButton>
+                                {popUpToggle&&<NewEntryMenu toggle={() => setPopUpToggle(!popUpToggle)}/>}
+                            </AnimeMain>
+                            :
+                            <Intro/>
+                        }>
                     </Route>
+                    <Route path="login" element={<LoginForm/>}/>
+                    <Route path="register" element={<RegisterForm/>}/>
                 </Routes>
             </BrowserRouter>
         </MainDiv>

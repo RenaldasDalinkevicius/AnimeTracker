@@ -1,20 +1,18 @@
 import { MongoClient } from "mongodb"
+
 const Db = process.env.ATLAS_URI
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true
 })
-var _db
-export function connectToServer(callback) {
-    client.connect(function (err, db) {
-      if (db)
-      {
-        _db = db.db("portfolio")
-        console.log("Successfully connected to MongoDB.")
-      }
-      return callback(err)
-         })
-  }
+const dbName = "anime"
+let _db
+export async function connectToServer() {
+  await client.connect()
+  console.log('Connected successfully to server')
+  _db = client.db(dbName)
+  return "done."
+}
 export function getDb() {
-    return _db
+  return _db
 }

@@ -16,3 +16,11 @@ export const loginValidation = formData => {
     })
     return schema.validate(formData)
 }
+export const newEntryValidation = formData => {
+    const schema = Joi.object({
+        title: Joi.string().required(),
+        imageUrl: Joi.string().required(),
+        episodes: Joi.array().required
+    })
+    return schema.validate(formData)
+}

@@ -3,6 +3,8 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faX } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios";
+import {useDispatch, useSelector} from "react-redux"
+import {newEntry} from "../Components/StateSlices/newEntrySlice";
 
     const PopUpBackground = styled.div`
     position: fixed;
@@ -82,10 +84,13 @@ import axios from "axios";
     color: red;
     `
 export default function NewEntryMenu(props) {
+    const {status, posted, error} = useSelector(state => state.newEntry)
+    const { loggedInUser } = useSelector(state => state.login)
     const [result, setResult] = useState([])
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
+    const [fetchError, setError] = useState(null)
     const [keyword, setKeyword] = useState("")
+    const dispatch = useDispatch()
     const fetchAnimeInfo = async () => {
         const query = `
         query ($id: Int, $page: Int, $perPage: Int, $search: String) {
@@ -138,24 +143,32 @@ export default function NewEntryMenu(props) {
             setLoading(false)
         }
         !keyword==""&&setLoading(true)
-        !keyword==""&&await axios.get(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
+        !keyword==""&&await fetch(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
+        //!keyword==""&&axios.get(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
     }
     useEffect(() => {
         !loading&&fetchAnimeInfo()
     }, [keyword])
-    function newEntry(selected) {
-        const selectedArr = [
-            {
-                "name": selected.title.english?selected.title.english:selected.title.romaji,
-                "coverImage": selected.coverImage.large,
-                "episodes": selected.episodes
-            }
-        ]
-        localStorage.setItem("anime", JSON.stringify(selectedArr))
-        props.toggle()
+    function newEntryF(selected) {
+        const selectedValues = {
+            "userId": loggedInUser.id,
+            "name": selected.title.english?selected.title.english:selected.title.romaji,
+            "coverImage": selected.coverImage.large,
+            "episodes": selected.episodes
+        }
+        dispatch(newEntry(selectedValues))
     }
+    useEffect(() => {
+        posted&&alert("Added to list")
+        posted&&props.toggle()
+    }, [posted])
+    useEffect(() => {
+        error&&alert("failed to add to list")
+        error&&props.toggle()
+    }, [error])
     const resultArr = result.map((result, index) => {
-        return result.type=="ANIME"&&<ResultDiv key={index} onClick={() => newEntry(result)}>
+        return result.type=="ANIME"&&<ResultDiv key={index} onClick={
+            () => status=="idle"?newEntryF(result):null}>
             <ResultImage src={String(result.coverImage.large)} onError={(event) => event.target.style.display = "none"}/>
             <ResultNameText>{result.title.english?result.title.english:result.title.romaji}</ResultNameText>
             <ResultEpisodesText>{result.episodes} Episodes</ResultEpisodesText>
@@ -170,7 +183,7 @@ export default function NewEntryMenu(props) {
                 onChange={(e) => setKeyword(e.target.value)}
             />
             <ResultWrapper>
-                {error?<ErrorMessage>{error}</ErrorMessage>:resultArr}
+                {fetchError?<ErrorMessage>{fetchError}</ErrorMessage>:resultArr}
             </ResultWrapper>
         </PopUpBackground>
     )

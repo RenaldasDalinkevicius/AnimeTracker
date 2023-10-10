@@ -11,7 +11,7 @@ export const loginUser = createAsyncThunk(
     "login/loginUser",
     async (loginFormData, {rejectWithValue}) => {
         try {
-            const {data} = await axios.post("record/login", loginFormData)
+            const {data} = await axios.post("/record/login", loginFormData)
             return data
         } catch (err) {
             return rejectWithValue(err.response.data)
@@ -23,6 +23,7 @@ export const loginSlice = createSlice({
     initialState,
     reducers: {
         logout(state, action) {
+            localStorage.removeItem("loggedInUser")
             state.loggedInUser = null
         }
     },
