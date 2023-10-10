@@ -20,7 +20,7 @@ export const newEntryValidation = formData => {
     const schema = Joi.object({
         title: Joi.string().required(),
         imageUrl: Joi.string().required(),
-        episodes: Joi.array().required
+        episodes: Joi.number().required()
     })
     return schema.validate(formData)
 }

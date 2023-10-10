@@ -152,26 +152,28 @@ export default function NewEntryMenu(props) {
     function newEntryF(selected) {
         const selectedValues = {
             "userId": loggedInUser.id,
-            "name": selected.title.english?selected.title.english:selected.title.romaji,
-            "coverImage": selected.coverImage.large,
+            "title": selected.title.english?selected.title.english:selected.title.romaji,
+            "imageUrl": selected.coverImage.large,
             "episodes": selected.episodes
         }
         dispatch(newEntry(selectedValues))
     }
     useEffect(() => {
-        posted&&alert("Added to list")
-        posted&&props.toggle()
-    }, [posted])
-    useEffect(() => {
-        error&&alert("failed to add to list")
-        error&&props.toggle()
-    }, [error])
+        if (status == "succeded") {
+            alert(posted)
+            props.toggle()
+        }
+        if (status == "failed") {
+            alert(error)
+            props.toggle()
+        }
+    }, [status])
     const resultArr = result.map((result, index) => {
         return result.type=="ANIME"&&<ResultDiv key={index} onClick={
             () => status=="idle"?newEntryF(result):null}>
-            <ResultImage src={String(result.coverImage.large)} onError={(event) => event.target.style.display = "none"}/>
-            <ResultNameText>{result.title.english?result.title.english:result.title.romaji}</ResultNameText>
-            <ResultEpisodesText>{result.episodes} Episodes</ResultEpisodesText>
+            <ResultImage onError={(event) => event.target.style.display = "none"}/>
+            <ResultNameText>{/*result.title.english?result.title.english:result.title.romaji*/"name"}</ResultNameText>
+            <ResultEpisodesText>{result.episodes}Episodes</ResultEpisodesText>
         </ResultDiv>
     })
     return (

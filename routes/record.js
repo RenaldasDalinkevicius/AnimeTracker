@@ -77,51 +77,40 @@ recordRoutes.route("/record/newEntry/:id").post(expressAsyncHandler(async (req, 
     let userId = { _id: new ObjectId(req.params.id)}
     const {error} = newEntryValidation(req.body)
     if (error) {
-        const err = new Error(error.details[0].message)
+        const err = new Error("Failed to validate")
         err.status = 400
         return next(err)
     }
     const {title, episodes, imageUrl} = req.body
     const query = {
-        ...userId,
-        "animeList": {
-            $elemmatch: {
+        _id: new ObjectId(req.params.id),
+        animeList: {
+            $elemMatch: {
                 title: title
             }
         }
     }
-    db_connect.collection("users").findOne(query, (err, document) => {
-        if (err) throw err
-        if (document) {
-            const err = new Error("Anime already in list")
-            err.status = 400
-            return next(err)
-        }
-    })
+    const titleExists = await db_connect.collection("users").findOne(query)
+    if (titleExists) {
+        const err = new Error("Anime already in list")
+        err.status = 400
+        return next(err)
+    } 
+    // Add episodes to episodesArr array
     let episodesArr = []
-    setTimeout(() => {
-        for (let episode = 0; episode < episodes; episode++) {
-            episodesArr.push({
-                episode: episode,
-                watched: false
-            })
-        }
-    }, 1000)
     let myobj = {
         title: title,
         imageUrl: imageUrl,
         episodes: episodesArr
     }
-    db_connect.collection("users").updateOne(
+    await db_connect.collection("users").updateOne(
         userId, {
             $push: {
-                "animeList": myobj
+                animeList: myobj
             }
         }
-        , function (err, res) {
-            if (err) throw err
-            response.json({message: "Anime added to list"})
-        })
+    )
+    response.json({message: "Anime added to list"})
 }))
 const __dirname = path.resolve(path.dirname(""))
 recordRoutes.use("*", function (req, res) {

@@ -12,11 +12,15 @@ export const newEntry = createAsyncThunk(
     async (selectedData, {rejectWithValue}) => {
         try {
             const {userId} = selectedData
-            const {returnedData} = await axios.post(
+            const {data} = await axios.post(
                 `/record/newEntry/${userId}`,
-                selectedData
+                {
+                    "title": selectedData.title,
+                    "imageUrl": selectedData.imageUrl,
+                    "episodes": selectedData.episodes
+                }
             )
-            return returnedData
+            return data
         }
         catch(err) {
             return rejectWithValue(err.response.data)
@@ -34,7 +38,7 @@ export const newEntrySlice = createSlice({
         },
         [newEntry.fulfilled]: (state, action) => {
             state.status = "succeded",
-            state.posted = true
+            state.posted = action.payload.message
         },
         [newEntry.rejected]: (state, action) => {
             state.status = "failed",
