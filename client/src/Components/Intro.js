@@ -2,8 +2,8 @@ import React from "react"
 import styled from "styled-components"
 
 const IntroDiv = styled.div`
-height: 100vh;
-display: flex;
+flex: 1 1 auto;
+padding-top: 60px;
 `
 export default function Intro() {
     return (

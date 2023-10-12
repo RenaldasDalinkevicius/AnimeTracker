@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faX } from "@fortawesome/free-solid-svg-icons"
-import axios from "axios";
 import {useDispatch, useSelector} from "react-redux"
 import {newEntry} from "../Components/StateSlices/newEntrySlice";
 
@@ -106,7 +105,9 @@ export default function NewEntryMenu(props) {
                         english
                     }
                     type
-                    episodes
+                    streamingEpisodes {
+                        title
+                    }
                     coverImage {
                         large
                     }
@@ -149,15 +150,17 @@ export default function NewEntryMenu(props) {
     useEffect(() => {
         !loading&&fetchAnimeInfo()
     }, [keyword])
+    // Make episodes an Array with every episode
     function newEntryF(selected) {
         const selectedValues = {
             "userId": loggedInUser.id,
             "title": selected.title.english?selected.title.english:selected.title.romaji,
             "imageUrl": selected.coverImage.large,
-            "episodes": selected.episodes
+            "episodes": selected.streamingEpisodes
         }
         dispatch(newEntry(selectedValues))
     }
+    // Revert to idle when finished
     useEffect(() => {
         if (status == "succeded") {
             alert(posted)

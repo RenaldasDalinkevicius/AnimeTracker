@@ -9,9 +9,12 @@ import {registrationValidation, loginValidation, newEntryValidation} from "../va
 
 export const recordRoutes = express.Router()
 recordRoutes.route("/record/:id").get(function (req, res) {
-    let db_connect = getDb("anime")
-    let myquery = {_id: ObjectId(req.params.id)}
-    db_connect.collection("users").findOne(myquery, function(err, result) {
+    let db_connect = getDb()
+    const query = {
+        _id: new ObjectId(req.params.id),
+        animeList
+    }
+    db_connect.collection("users").find(query).toArray(function(err, result) {
         if (err) throw err
         res.json(result)
     })
@@ -95,13 +98,11 @@ recordRoutes.route("/record/newEntry/:id").post(expressAsyncHandler(async (req, 
         const err = new Error("Anime already in list")
         err.status = 400
         return next(err)
-    } 
-    // Add episodes to episodesArr array
-    let episodesArr = []
+    }
     let myobj = {
         title: title,
         imageUrl: imageUrl,
-        episodes: episodesArr
+        episodes: episodes
     }
     await db_connect.collection("users").updateOne(
         userId, {
