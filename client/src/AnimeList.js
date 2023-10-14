@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useSelector} from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
@@ -47,15 +46,41 @@ color: white;
 margin-left: auto;
 `
 export default function AnimeList () {
-    // NOTHING WORKS HERE
-    const {getData, setGetData} = useState()
-    const {loading, setLoading} = useState(true)
+    const [getData, setGetData] = useState([])
+    const [loading, setLoading] = useState(true)
     const {loggedInUser} = useSelector(state => state.login)
     useEffect(() => {
-        fetch(`/record/${loggedInUser.id}`).then((res) => {
-            setGetData(res.data)
-            setLoading(false)
-        })
+        const fetchData = () => {
+            fetch(`/record/${loggedInUser.id}`).then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`)
+                }
+                return response.json()
+            }).then((data) => {
+                setGetData(data)
+                setLoading(false)
+                console.log(data)
+            }).catch((error) => {
+                console.error(error)
+            })
+        }
+        /*
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/record/${loggedInUser.id}`)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`)
+                }
+                const data = await response.json()
+                setGetData(data)
+                setLoading(false)
+                console.log(data)
+            } catch(error) {
+                console.error(error)
+            }
+        }
+        */
+        fetchData()
     }, [])
     const AnimeArr = getData.map((anime, index) => {
         return <Anime key={nanoid()}>
@@ -68,6 +93,7 @@ export default function AnimeList () {
     });
     return (
         <AnimeUl>
+            {loading?"loading":<AnimeArr/>}
         </AnimeUl>
     )
 }
