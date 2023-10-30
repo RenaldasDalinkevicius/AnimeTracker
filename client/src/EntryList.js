@@ -4,6 +4,7 @@ import { useSelector} from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import {nanoid} from "nanoid"
+import axios from "axios";
 
 const AnimeUl = styled.ul`
 list-style: none;
@@ -45,44 +46,23 @@ padding: 1em;
 color: white;
 margin-left: auto;
 `
-export default function AnimeList () {
+export default function EntryList () {
     const [getData, setGetData] = useState([])
     const [loading, setLoading] = useState(true)
     const {loggedInUser} = useSelector(state => state.login)
     useEffect(() => {
-        const fetchData = () => {
-            fetch(`/record/${loggedInUser.id}`).then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`)
-                }
-                return response.json()
-            }).then((data) => {
-                setGetData(data)
-                setLoading(false)
-                console.log(data)
-            }).catch((error) => {
-                console.error(error)
-            })
-        }
-        /*
         const fetchData = async () => {
-            try {
-                const response = await fetch(`/record/${loggedInUser.id}`)
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`)
-                }
-                const data = await response.json()
-                setGetData(data)
-                setLoading(false)
-                console.log(data)
-            } catch(error) {
-                console.error(error)
-            }
+            const response = await fetch(`/record/${loggedInUser.id}`)
+            setGetData(response)
+            setLoading(false)
         }
-        */
-        fetchData()
+        fetchData().catch((err) => {
+            //axios: Request aborted
+            // fetch: NetworkError when attempting to fetch resource.
+            console.error(err.message)
+        })
     }, [])
-    const AnimeArr = getData.map((anime, index) => {
+    const AnimeArr = !loading&&length(getData)<=0?getData.map((anime, index) => {
         return <Anime key={nanoid()}>
             <AnimeDiv>
                 <AnimeImage src={String(anime.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
@@ -90,7 +70,7 @@ export default function AnimeList () {
                 <StyledIcon icon={faTrash} style={{width: "15px", height: "15px", gridArea: "trash"}}/>
             </AnimeDiv>
         </Anime>
-    });
+    }):null;
     return (
         <AnimeUl>
             {loading?"loading":<AnimeArr/>}

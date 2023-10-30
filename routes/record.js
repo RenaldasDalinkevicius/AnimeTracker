@@ -10,17 +10,13 @@ import {registrationValidation, loginValidation, newEntryValidation} from "../va
 export const recordRoutes = express.Router()
 recordRoutes.route("/record/:id").get(function (req, res) {
     let db_connect = getDb()
-    const query = {
-        _id: new ObjectId(req.params.id)
-    }
-    db_connect.collection("users").findOne(query, {animeList: 1, _id:0}, function(err, result) {
+    let query = { _id: new ObjectId(req.params.id)}
+    db_connect.collection("users").findOne(query, {
+        animeList: 1,
+        _id: 0
+    }, function (err, result) {
         if (err) throw err
-        if (result && result.animeList) {
-            res.json(result.animeList)
-        }
-        else {
-            res.json([])
-        }
+        res.json(result)
     })
 })
 recordRoutes.route("/record/login").post(expressAsyncHandler(async (req, res, next) => {

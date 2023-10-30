@@ -10,7 +10,7 @@ import Layout from "./Components/Layout";
 import Intro from "./Components/Intro";
 import LoginForm from "./LoginPage/LoginForm";
 import RegisterForm from "./LoginPage/RegisterForm";
-import AnimeList from "./AnimeList";
+import EntryList from "./EntryList";
 
     const MainDiv = styled.main`
     display: flex;
@@ -57,7 +57,7 @@ export default function App () {
                     <Route index element={
                         loggedInUser?
                             <AnimeMain>
-                                <AnimeList/>
+                                <EntryList/>
                                 <AnimeButton onClick={() => setPopUpToggle(!popUpToggle)}>
                                     <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
                                 </AnimeButton>
