@@ -3,7 +3,8 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faX } from "@fortawesome/free-solid-svg-icons"
 import {useDispatch, useSelector} from "react-redux"
-import {newEntry} from "../Components/StateSlices/newEntrySlice";
+import {newEntry, resetStatus} from "../../Components/StateSlices/newEntrySlice";
+import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
 
     const PopUpBackground = styled.div`
     position: fixed;
@@ -145,12 +146,10 @@ export default function NewEntryMenu(props) {
         }
         !keyword==""&&setLoading(true)
         !keyword==""&&await fetch(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
-        //!keyword==""&&axios.get(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
     }
     useEffect(() => {
         !loading&&fetchAnimeInfo()
     }, [keyword])
-    // Make episodes an Array with every episode
     function newEntryF(selected) {
         const selectedValues = {
             "userId": loggedInUser.id,
@@ -160,10 +159,11 @@ export default function NewEntryMenu(props) {
         }
         dispatch(newEntry(selectedValues))
     }
-    // Revert to idle when finished
     useEffect(() => {
         if (status == "succeded") {
             alert(posted)
+            dispatch(resetStatus())
+            dispatch(updateListTrue())
             props.toggle()
         }
         if (status == "failed") {
@@ -174,8 +174,8 @@ export default function NewEntryMenu(props) {
     const resultArr = result.map((result, index) => {
         return result.type=="ANIME"&&<ResultDiv key={index} onClick={
             () => status=="idle"?newEntryF(result):null}>
-            <ResultImage onError={(event) => event.target.style.display = "none"}/>
-            <ResultNameText>{/*result.title.english?result.title.english:result.title.romaji*/"name"}</ResultNameText>
+            <ResultImage src={result.coverImage.large} onError={(event) => event.target.style.display = "none"}/>
+            <ResultNameText>{result.title.english?result.title.english:result.title.romaji}</ResultNameText>
             <ResultEpisodesText>{result.episodes}Episodes</ResultEpisodesText>
         </ResultDiv>
     })

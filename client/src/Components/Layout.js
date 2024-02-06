@@ -9,6 +9,7 @@ import { logout } from "./StateSlices/loginSlice"
     left: 0;
     width: 100%;
     background-color: black;
+    height: 4em;
     `
     const Wrapper = styled.div`
     display: flex;

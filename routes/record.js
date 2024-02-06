@@ -1,4 +1,4 @@
-import express, { response } from "express"
+import express from "express"
 import { getDb } from "../db/conn.js"
 import { ObjectId } from "mongodb"
 import path from "path"
@@ -8,17 +8,22 @@ import expressAsyncHandler from "express-async-handler"
 import {registrationValidation, loginValidation, newEntryValidation} from "../validation/validate.js"
 
 export const recordRoutes = express.Router()
-recordRoutes.route("/record/:id").get(function (req, res) {
+recordRoutes.route("/record/getEntry/:id").get(expressAsyncHandler(async (req, res, next) => {
     let db_connect = getDb()
     let query = { _id: new ObjectId(req.params.id)}
-    db_connect.collection("users").findOne(query, {
+    const data = await db_connect.collection("users").findOne(query, {
         animeList: 1,
         _id: 0
     }, function (err, result) {
-        if (err) throw err
+        if (err) {
+            const err = new Error("Failed to get data")
+            err.status = 401
+            return next(err)
+        }
         res.json(result)
     })
-})
+    res.json(data)
+}))
 recordRoutes.route("/record/login").post(expressAsyncHandler(async (req, res, next) => {
     const {error} = loginValidation(req.body)
     if (error) {

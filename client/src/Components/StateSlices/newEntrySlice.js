@@ -31,7 +31,11 @@ export const newEntry = createAsyncThunk(
 export const newEntrySlice = createSlice({
     name: "newentry",
     initialState,
-    reducers: {},
+    reducers: {
+        resetStatus: (state) => {
+            state.status = "idle"
+        }
+    },
     extraReducers: {
         [newEntry.pending]: (state, action) => {
             state.status = "loading"
@@ -46,4 +50,7 @@ export const newEntrySlice = createSlice({
         }
     }
 })
+
+export const {resetStatus} = newEntrySlice.actions
+
 export default newEntrySlice.reducer

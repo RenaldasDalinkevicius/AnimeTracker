@@ -3,22 +3,23 @@ import styled from "styled-components"
 import GlobalStyle from "./theme/globalStyle"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import NewEntryMenu from "./NewEntryPage/NewEntryMenu"
+import NewEntryMenu from "./EntryList/Components/NewEntryMenu"
 import { useSelector} from "react-redux"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Components/Layout";
 import Intro from "./Components/Intro";
 import LoginForm from "./LoginPage/LoginForm";
 import RegisterForm from "./LoginPage/RegisterForm";
-import EntryList from "./EntryList";
+import EntryList from "./EntryList/EntryList";
 
     const MainDiv = styled.main`
     display: flex;
     flex-direction: column;
     `
-    const AnimeMain = styled.div`
+    const EntryMain = styled.div`
+    padding-top: 4em;
     `
-    const AnimeButton = styled.button`
+    const EntryButton = styled.button`
     display: flex;
     cursor: pointer;
     position: fixed;
@@ -52,17 +53,17 @@ export default function App () {
         <MainDiv>
             <GlobalStyle/>
             <BrowserRouter>
-            <Layout/>
+                <Layout/>
                 <Routes>
                     <Route index element={
                         loggedInUser?
-                            <AnimeMain>
+                            <EntryMain>
                                 <EntryList/>
-                                <AnimeButton onClick={() => setPopUpToggle(!popUpToggle)}>
+                                <EntryButton type="button" onClick={() => setPopUpToggle(!popUpToggle)}>
                                     <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
-                                </AnimeButton>
+                                </EntryButton>
                                 {popUpToggle&&<NewEntryMenu toggle={() => setPopUpToggle(!popUpToggle)}/>}
-                            </AnimeMain>
+                            </EntryMain>
                             :
                             <Intro/>
                         }>
