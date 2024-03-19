@@ -8,7 +8,7 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
 
     const PopUpBackground = styled.div`
     position: fixed;
-    background-color: rgb(0,0,0,0.4);
+    background-color: rgb(0,0,0,0.9);
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -101,14 +101,13 @@ export default function NewEntryMenu(props) {
                 }
                 media(id: $id, search: $search, sort: POPULARITY_DESC) {
                     id
+                    type
                     title {
                         romaji
                         english
                     }
                     type
-                    streamingEpisodes {
-                        title
-                    }
+                    episodes
                     coverImage {
                         large
                     }
@@ -155,7 +154,7 @@ export default function NewEntryMenu(props) {
             "userId": loggedInUser.id,
             "title": selected.title.english?selected.title.english:selected.title.romaji,
             "imageUrl": selected.coverImage.large,
-            "episodes": selected.streamingEpisodes
+            "episodes": Array.from({length: selected.episodes}, () => ({ watched: false }))
         }
         dispatch(newEntry(selectedValues))
     }
@@ -168,6 +167,7 @@ export default function NewEntryMenu(props) {
         }
         if (status == "failed") {
             alert(error)
+            dispatch(resetStatus())
             props.toggle()
         }
     }, [status])

@@ -2,11 +2,11 @@ import React, {useEffect, useState} from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector} from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
-import {nanoid} from "nanoid"
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 import { updateListFalse, updateListTrue } from "../Components/StateSlices/updateListSlice"
-import EntryDelete from "./Components/EntryDelete"
+import NewEntryMenu from "./Components/NewEntryMenu"
+import Entry from "./Components/Entry"
 
 const EntryUl = styled.ul`
 list-style: none;
@@ -15,7 +15,7 @@ width: 100%;
 margin: 0;
 padding: 0;
 `
-const Entry = styled.li`
+const EntryLi = styled.li`
 padding:1em;
 `
 const EntryDiv = styled.div`
@@ -23,7 +23,7 @@ width: 100%;
 display: grid;
 grid-template-areas:
 "picture name name trash"
-"picture name name trash";
+"picture episodes episodes trash";
 color: white;
 background-color: rgba(32,32,32,255);
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -47,6 +47,7 @@ height: 32px;
 padding: 1em;
 color: white;
 margin-left: auto;
+z-index: 1;
 `
 const Empty = styled.div`
 display: flex;
@@ -57,24 +58,48 @@ align-content: center;
 const EmptyText = styled.p`
 color: inherit;
 `
+const EntryButton = styled.button`
+display: flex;
+cursor: pointer;
+position: fixed;
+right: 0;
+bottom: 0;
+border: none;
+height: 4rem;
+width: 4rem;
+margin: 2em;
+border-radius: 50%;
+padding: 0.5em;
+background-color: black;
+color: white;
+&: hover {
+    background-color: white;
+    color: black;
+}
+`
 export default function EntryList () {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
+    const [newEntryPopup, setNewEntryPopup] = useState(false)
+    const [entryPopup, setEntryPopup] = useState(false)
+    const [entryTitle, setEntryTitle] = useState({
+        title: "",
+        index: null
+    })
     const {loggedInUser} = useSelector(state => state.login)
     const update = useSelector((state) => state.updateList.bool)
     const dispatch = useDispatch()
-    const [popUpToggle, setPopUpToggle] = useState(false)
     useEffect(() => {
         if (update) {
             setLoading(true)
             const fetchData = async () => {
                 try {
-                    const res = await axios.get(`/record/getEntry/${loggedInUser.id}`)
+                    const res = await axios.get(`/record/getEntries/${loggedInUser.id}`)
                     setData(res.data.animeList)
                     dispatch(updateListFalse())
                     setLoading(false)
                 } catch(err) {
-                    console.error(err.message)
+                    alert(err.message)
                     dispatch(updateListFalse())
                     setLoading(false)
                 }
@@ -86,14 +111,35 @@ export default function EntryList () {
         dispatch(updateListTrue())
     }, [])
     const length = (arr) => arr.length
-    const EntryArr = !loading?!length(data)<=0?data.map(data => {
-        return <Entry key={nanoid()}>
-        <EntryDiv>
-            <EntryImage src={String(data.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
-            <EntryNameText>{data.title}</EntryNameText>
-            <StyledIcon icon={faTrash} style={{width: "15px", height: "15px", gridArea: "trash"}} onClick={() => setPopUpToggle(!popUpToggle)}/>
+    async function deleteEntry(index) {
+        const confirmResponse = confirm("Delete this entry?")
+        if (confirmResponse == true) {
+            try {
+                const response = await axios.post(`/record/deleteEntry/${loggedInUser.id}`, {
+                    title: data[index].title
+                })
+                alert(response.data.message)
+            } catch(err) {
+                alert(err.message)
+            }
+            dispatch(updateListTrue())
+        }
+    }
+    function openEntry(title, index) {
+        setEntryTitle({
+            title: title,
+            index: index
+        })
+        setEntryPopup(!entryPopup)
+    }
+    const EntryArr = !loading?!length(data)<=0?data.map((fetchData, index) => {
+        return <EntryLi key={index}>
+        <EntryDiv onClick={() => openEntry(fetchData.title, index)}>
+            <EntryImage src={String(fetchData.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
+            <EntryNameText>{fetchData.title}</EntryNameText>
+            <StyledIcon icon={faTrash} style={{width: "15px", height: "15px", gridArea: "trash"}} onClick={() => deleteEntry(index)}/>
         </EntryDiv>
-    </Entry>
+    </EntryLi>
     })
     :
     <Empty>
@@ -106,7 +152,11 @@ export default function EntryList () {
     return (
         <EntryUl>
             {EntryArr}
-            {popUpToggle&&<EntryDelete toggle={() => setPopUpToggle(!popUpToggle)}/>}
+            <EntryButton type="button" onClick={() => setNewEntryPopup(!newEntryPopup)}>
+                <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
+            </EntryButton>
+            {newEntryPopup&&<NewEntryMenu toggle={() => setNewEntryPopup(!newEntryPopup)}/>}
+            {entryPopup&&<Entry title={entryTitle.title} index={entryTitle.index} toggle={() => setEntryPopup(!entryPopup)}/>}
         </EntryUl>
     )
 }

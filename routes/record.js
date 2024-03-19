@@ -8,7 +8,7 @@ import expressAsyncHandler from "express-async-handler"
 import {registrationValidation, loginValidation, newEntryValidation} from "../validation/validate.js"
 
 export const recordRoutes = express.Router()
-recordRoutes.route("/record/getEntry/:id").get(expressAsyncHandler(async (req, res, next) => {
+recordRoutes.route("/record/getEntries/:id").get(expressAsyncHandler(async (req, res, next) => {
     let db_connect = getDb()
     let query = { _id: new ObjectId(req.params.id)}
     const data = await db_connect.collection("users").findOne(query, {
@@ -90,33 +90,87 @@ recordRoutes.route("/record/newEntry/:id").post(expressAsyncHandler(async (req, 
         return next(err)
     }
     const {title, episodes, imageUrl} = req.body
-    const query = {
+    const titleExists = await db_connect.collection("users").findOne({
         _id: new ObjectId(req.params.id),
-        animeList: {
-            $elemMatch: {
-                title: title
-            }
-        }
-    }
-    const titleExists = await db_connect.collection("users").findOne(query)
+        "animeList.title": title
+    })
     if (titleExists) {
         const err = new Error("Anime already in list")
         err.status = 400
         return next(err)
     }
-    let myobj = {
-        title: title,
-        imageUrl: imageUrl,
-        episodes: episodes
+    else {
+        let myobj = {
+            title: title,
+            imageUrl: imageUrl,
+            episodes: episodes
+        }
+        await db_connect.collection("users").updateOne(
+            userId, {
+                $push: {
+                    animeList: myobj
+                }
+            }
+        )
+        response.json({message: "Anime added to list"})
     }
-    await db_connect.collection("users").updateOne(
-        userId, {
-            $push: {
-                animeList: myobj
+}))
+recordRoutes.route("/record/deleteEntry/:id").post(expressAsyncHandler(async (req, response, next) => {
+    let db_connect = getDb()
+    let userId = { _id: new ObjectId( req.params.id )}
+    let reqTitle = req.body.title
+    try {
+        const res = await db_connect.collection("users").updateOne(userId,
+            {
+                $pull: {
+                    animeList: {
+                        title: reqTitle
+                    }
+                }
+            }
+        )
+        response.json({message: "Entry deleted"})
+    } catch(error) {
+        return next(error)
+    }
+}))
+recordRoutes.route("/record/getEntry/:id").post(expressAsyncHandler(async (req, response, next) => {
+    let db_connect = getDb()
+    let userId = { _id: new ObjectId( req.params.id )}
+    try {
+        const res = await db_connect.collection("users").findOne(userId, {
+            projection: {
+                _id: 0,
+                animeList: {
+                    $elemMatch: {
+                        title: req.body.title
+                    }
+                }
+            }
+        })
+        response.json(res)
+    } catch(error) {
+        return next(error)
+    }
+}))
+recordRoutes.route("/record/updateEntry/:id").post(expressAsyncHandler(async (req, response, next) => {
+    let db_connect = getDb()
+    let userId = { _id: new ObjectId( req.params.id )}
+    const newEpisodeArray = req.body.episodes
+    const index = req.body.index
+    try {
+        const query = {
+            $set: {
+                [`animeList.${index}.episodes`]: newEpisodeArray
             }
         }
-    )
-    response.json({message: "Anime added to list"})
+        const res = await db_connect.collection("users").findOneAndUpdate(userId, query, {
+            returnOriginal: false
+        })
+        response.json({message: "Updated"})
+    } catch(error) {
+        return next(error)
+    }
 }))
 const __dirname = path.resolve(path.dirname(""))
 recordRoutes.use("*", function (req, res) {

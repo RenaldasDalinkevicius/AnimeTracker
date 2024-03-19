@@ -34,6 +34,8 @@ export const newEntrySlice = createSlice({
     reducers: {
         resetStatus: (state) => {
             state.status = "idle"
+            state.posted = null
+            state.error = null
         }
     },
     extraReducers: {
