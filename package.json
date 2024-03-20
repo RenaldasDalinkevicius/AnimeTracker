@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "local-build": "cd client && npm run build"
+    "local-build": "cd client && npm run build",
+    "postbuild": "npm install && cd client && NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "engines": {
     "node": "17.4.0"
