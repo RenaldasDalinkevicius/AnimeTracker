@@ -14,7 +14,7 @@ z-index: 2;
 left: 0;
 top: 0;
 display: flex;
-padding: 0 2em;
+padding: 0 6.5em 2em 6.5em;
 flex-direction: column;
 color: white;
 `
@@ -38,12 +38,16 @@ color: inherit;
 const EntryDiv = styled.div`
 display: grid;
 grid-template-areas:
-"picture episodes episodes"
-"picture episodes episodes"
-"title other other";
-grid-template-columns: repeat(3, 1fr);
-grid-template-rows: repeat(3, 1fr);
-grid-gap: 1em;
+"picture all all all"
+"picture episodes episodes episodes"
+"picture episodes episodes episodes"
+"title other other other";
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: repeat(4, 1fr);
+grid-gap: 2em;
+margin-top: 1em;
+width: 100%;
+height: 100%;
 `
 const EntryTitle = styled.h2`
 margin: 0;
@@ -54,14 +58,15 @@ grid-area: title
 const EntryImage = styled.img`
 height: 100%;
 width: 100%;
-object-fit: contain;
+object-fit: fill;
 grid-area: picture;
 `
 const Episodes = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: wrap;
-gap: 1em;
+gap: 2em;
+justify-content: space-between;
 height: 100%;
 width: 100%;
 grid-area: episodes;
@@ -69,22 +74,56 @@ align-content: flex-start;
 overflow: scroll;
 `
 const Episode = styled.button`
-background: ${props => props.watched?"green":"red"};
 padding: 0;
 margin: 0;
 height: 50px;
 width: 100px;
+font-weight: 900;
+text-decoration: none;
+background-color: black;
+color: white;
+border: none;
+border-bottom: 4px solid ${props => props.watched?"green":"red"};
+&: hover {
+    cursor: pointer;
+    background-color: white;
+    color: black;
+}
 `
-const ButtonWrapper = styled.div`
+const UpdateEpisodesWrapper = styled.div`
 display: flex;
 flex-direction: row;
+width: 100%;
+grid-area: other;
+justify-content: flex-end;
+gap: 2em;
 `
 const Button = styled.button`
 background: white;
-color: black;
+color: white;
 height: 50px;
 width: 150px;
-grid-area: other;
+font-weight: 900;
+text-decoration: none;
+background-color: black;
+border: none;
+border-bottom: 4px solid white;
+padding: 1em;
+margin: 0.5em 1em;
+&: hover {
+    cursor: pointer;
+    background-color: white;
+    color: black;
+}
+`
+const UpdateAllWrapper = styled.div`
+display: flex;
+flex-direction: row;
+width: 100%;
+grid-area: all;
+justify-content: flex-end;
+gap: 2em;
+margin-top: auto;
 `
 export default function Entry(props) {
     const {loggedInUser} = useSelector(state => state.login)
@@ -131,6 +170,16 @@ export default function Entry(props) {
         updatedFetchData[i].watched = !updatedFetchData[i].watched
         setFetchData({...fetchData, episodes: updatedFetchData})
     }
+    const handleAllEpisodes = (bool) => {
+        setChange(true)
+        setFetchData(prevState => ({
+            ...prevState,
+            episodes: prevState.episodes.map(episodes => ({
+                ...episodes,
+                watched: bool
+            }))
+        }))
+    }
     async function updateEpisodes() {
         try {
             const response = await axios.post(`/record/updateEntry/${loggedInUser.id}`, {
@@ -158,6 +207,10 @@ export default function Entry(props) {
             <StyledIcon icon={faX} onClick={props.toggle}/>
             {!loading?
             <EntryDiv>
+                <UpdateAllWrapper>
+                    <Button onClick={() => handleAllEpisodes(true)}>All watched</Button>
+                    <Button onClick={() => handleAllEpisodes(false)}>All not watched</Button>
+                </UpdateAllWrapper>
                 <EntryImage src={String(fetchData.img)}/>
                 <EntryTitle>
                     {fetchData.title}
@@ -166,7 +219,7 @@ export default function Entry(props) {
                     {episodesArr}
                 </Episodes>
                 {change&&
-                <ButtonWrapper>
+                <UpdateEpisodesWrapper>
                     <Button onClick={async (event) => {
                         event.target.disabled
                         setLoading(true)
@@ -176,7 +229,7 @@ export default function Entry(props) {
                         SetUpdate(true)
                         setChange(false)
                     }}>Cancel</Button>
-                </ButtonWrapper>}
+                </UpdateEpisodesWrapper>}
             </EntryDiv>
             :
             <Empty>

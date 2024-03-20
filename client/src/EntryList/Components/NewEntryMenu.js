@@ -15,7 +15,7 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
     left: 0;
     top: 0;
     display: flex;
-    padding: 0 2em;
+    padding: 0 6.5em;
     flex-direction: column;
     color: white;
     `
@@ -176,7 +176,7 @@ export default function NewEntryMenu(props) {
             () => status=="idle"?newEntryF(result):null}>
             <ResultImage src={result.coverImage.large} onError={(event) => event.target.style.display = "none"}/>
             <ResultNameText>{result.title.english?result.title.english:result.title.romaji}</ResultNameText>
-            <ResultEpisodesText>{result.episodes}Episodes</ResultEpisodesText>
+            <ResultEpisodesText>{result.episodes} Episodes</ResultEpisodesText>
         </ResultDiv>
     })
     return (

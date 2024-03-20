@@ -13,10 +13,12 @@ list-style: none;
 height: 100%;
 width: 100%;
 margin: 0;
-padding: 0;
+padding: 0 5.5em 0 6.5em;
 `
 const EntryLi = styled.li`
-padding:1em;
+margin-top: 2em;
+display: flex;
+flex-direction: row;
 `
 const EntryDiv = styled.div`
 width: 100%;
@@ -40,14 +42,30 @@ width: 200px;
 grid-area: picture;
 object-fit: cover;
 `
-const StyledIcon = styled(FontAwesomeIcon)`
+const AddEntryButton = styled(FontAwesomeIcon)`
 cursor: pointer;
 width: 32px;
 height: 32px;
 padding: 1em;
-color: white;
 margin-left: auto;
 z-index: 1;
+`
+const RemoveButton = styled(FontAwesomeIcon)`
+width: 20px;
+height: 20px;
+gridArea: thrash;
+align-self: center;
+color: white;
+padding: 1em;
+margin: 1em;
+background: black;
+cursor: pointer;
+border-radius: 50%;
+&: hover {
+    background-color: white;
+    color: black;
+}
+
 `
 const Empty = styled.div`
 display: flex;
@@ -137,8 +155,8 @@ export default function EntryList () {
         <EntryDiv onClick={() => openEntry(fetchData.title, index)}>
             <EntryImage src={String(fetchData.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
             <EntryNameText>{fetchData.title}</EntryNameText>
-            <StyledIcon icon={faTrash} style={{width: "15px", height: "15px", gridArea: "trash"}} onClick={() => deleteEntry(index)}/>
         </EntryDiv>
+        <RemoveButton icon={faTrash} onClick={() => deleteEntry(index)}/>
     </EntryLi>
     })
     :
@@ -153,7 +171,7 @@ export default function EntryList () {
         <EntryUl>
             {EntryArr}
             <EntryButton type="button" onClick={() => setNewEntryPopup(!newEntryPopup)}>
-                <StyledIcon icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
+                <AddEntryButton icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
             </EntryButton>
             {newEntryPopup&&<NewEntryMenu toggle={() => setNewEntryPopup(!newEntryPopup)}/>}
             {entryPopup&&<Entry title={entryTitle.title} index={entryTitle.index} toggle={() => setEntryPopup(!entryPopup)}/>}
