@@ -39,9 +39,6 @@ recordRoutes.route("/record/login").post(expressAsyncHandler(async (req, res, ne
     }
     if (user && await matchPassword(password, user.password)) {
         res.json({
-            id: user._id,
-            username: user.username,
-            email: user.email,
             token: generateToken(user._id)
         })
     } else {

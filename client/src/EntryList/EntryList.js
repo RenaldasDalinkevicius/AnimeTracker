@@ -29,6 +29,10 @@ grid-template-areas:
 color: white;
 background-color: rgba(32,32,32,255);
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+&: hover {
+    cursor: pointer;
+    background-color: rgba(20,20,20,255)
+}
 `
 const EntryNameText = styled.h2`
 margin: 1em 0 1em 1em;

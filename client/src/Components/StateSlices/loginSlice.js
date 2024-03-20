@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
+import { jwtDecode } from "jwt-decode"
 
 const initialState = {
     status: "Login",
-    loggedInUser: null,
-    error: null
+    loggedInUser: localStorage.getItem("token")?jwtDecode(localStorage.getItem("token")):null,
+    error: null,
+    token: null,
 }
 
 export const loginUser = createAsyncThunk(
@@ -23,7 +25,7 @@ export const loginSlice = createSlice({
     initialState,
     reducers: {
         logout(state, action) {
-            localStorage.removeItem("loggedInUser")
+            localStorage.removeItem("token")
             state.loggedInUser = null
         }
     },
@@ -33,7 +35,8 @@ export const loginSlice = createSlice({
         },
         [loginUser.fulfilled]: (state, action) => {
             state.status = "Login",
-            state.loggedInUser = action.payload,
+            state.token = action.payload.token,
+            state.loggedInUser = jwtDecode(action.payload.token)
             state.error = null
         },
         [loginUser.rejected]: (state, action) => {

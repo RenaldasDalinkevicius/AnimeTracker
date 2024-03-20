@@ -66,7 +66,6 @@ display: flex;
 flex-direction: row;
 flex-wrap: wrap;
 gap: 2em;
-justify-content: space-between;
 height: 100%;
 width: 100%;
 grid-area: episodes;
@@ -78,16 +77,15 @@ padding: 0;
 margin: 0;
 height: 50px;
 width: 100px;
-font-weight: 900;
 text-decoration: none;
-background-color: black;
+background-color: rgba(32,32,32,255);
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 color: white;
 border: none;
 border-bottom: 4px solid ${props => props.watched?"green":"red"};
 &: hover {
     cursor: pointer;
-    background-color: white;
-    color: black;
+    background-color: rgba(20,20,20,255);
 }
 `
 const UpdateEpisodesWrapper = styled.div`
@@ -99,21 +97,18 @@ justify-content: flex-end;
 gap: 2em;
 `
 const Button = styled.button`
-background: white;
-color: white;
 height: 50px;
 width: 150px;
-font-weight: 900;
 text-decoration: none;
-background-color: black;
+background-color: rgba(32,32,32,255);
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+color: white;
 border: none;
-border-bottom: 4px solid white;
 padding: 1em;
 margin: 0.5em 1em;
 &: hover {
     cursor: pointer;
-    background-color: white;
-    color: black;
+    background-color: rgba(20,20,20,255);
 }
 `
 const UpdateAllWrapper = styled.div`
