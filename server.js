@@ -6,13 +6,14 @@ import { connectToServer } from "./db/conn.js"
 import { globalErrorHandler } from "./middleware/errorMiddleware.js"
 const app = express()
 app.use(express.urlencoded({ extended: true }))
+const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.static("client/dist"))
 app.use(express.json())
 app.use(recordRoutes)
 app.use(globalErrorHandler)
-const server = app.listen(0, () => {
-  const port = server.address().port
+
+app.listen(port, () => {
   connectToServer(function (err) {
     if (err) console.error(err)
   })
