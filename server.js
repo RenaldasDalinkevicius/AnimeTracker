@@ -12,7 +12,9 @@ app.use(express.json())
 app.use(recordRoutes)
 app.use(globalErrorHandler)
 const server = app.listen(0, () => {
-  connectToServer().then(console.log).catch(console.error)
   const port = server.address().port
+  connectToServer(function (err) {
+    if (err) console.error(err)
+  })
   console.log(`Server is running: http://localhost:${port}`)
 })
