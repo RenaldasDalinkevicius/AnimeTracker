@@ -67,7 +67,8 @@ recordRoutes.route("/record/register").post(expressAsyncHandler(async(req, res, 
         const user = await db_connect.collection("users").insertOne({
             username: username,
             email: email,
-            password: await bcryptjs.hash(password, salt)
+            password: await bcryptjs.hash(password, salt),
+            animeList: []
         })
         res.json({message: "New user created"})
     }

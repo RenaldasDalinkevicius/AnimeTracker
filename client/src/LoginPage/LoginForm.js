@@ -82,6 +82,7 @@ export default function LoginForm() {
     useEffect(() => {
         if (token) {
             console.log(token)
+            // Possibly change to cookies instead of LocalStorage
             localStorage.setItem("token", token)
             navigate("/")
         }
