@@ -85,7 +85,7 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
     `
 export default function NewEntryMenu(props) {
     const {status, posted, error} = useSelector(state => state.newEntry)
-    const { loggedInUser } = useSelector(state => state.login)
+    const { id } = useSelector(state => state.login)
     const [result, setResult] = useState([])
     const [loading, setLoading] = useState(false)
     const [fetchError, setError] = useState(null)
@@ -151,7 +151,7 @@ export default function NewEntryMenu(props) {
     }, [keyword])
     function newEntryF(selected) {
         const selectedValues = {
-            "userId": loggedInUser.id,
+            "userId": id,
             "title": selected.title.english?selected.title.english:selected.title.romaji,
             "imageUrl": selected.coverImage.large,
             "episodes": Array.from({length: selected.episodes}, () => ({ watched: false }))

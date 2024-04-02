@@ -40,12 +40,11 @@ export default function Layout() {
     const navigate = useNavigate()
     const logoutHandler = () => {
         dispatch(logout())
-        localStorage.removeItem("LoggedInUser")
     }
-    const {loggedInUser} = useSelector(state => state.login)
+    const {id} = useSelector(state => state.login)
     return (
         <Nav>
-            {!loggedInUser?
+            {!id?
                 <Wrapper>
                     <StyledButton onClick={() => navigate("login")}>{"Login"}</StyledButton>
                     <StyledButton onClick={() => navigate("register")}>{"Register"}</StyledButton>

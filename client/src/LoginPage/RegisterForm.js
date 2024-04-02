@@ -74,7 +74,7 @@ import { useNavigate } from "react-router-dom"
 export default function RegisterForm() {
     const dispatch = useDispatch()
     const {status, userRegistered, error} = useSelector(state => state.register)
-    const {loggedInUser} = useSelector(state => state.login)
+    const {id} = useSelector(state => state.login)
     const TextInput = ({label, ...props}) => {
         const [field, meta] = useField(props)
         return (
@@ -89,10 +89,10 @@ export default function RegisterForm() {
     }
     const navigate = useNavigate()
     useEffect(() => {
-        if (loggedInUser) {
+        if (id) {
             navigate("/")
         }
-    }, [loggedInUser])
+    }, [id])
     useEffect(() => {
         if (userRegistered) {
             navigate("/login")

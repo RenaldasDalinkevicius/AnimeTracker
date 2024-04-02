@@ -77,16 +77,13 @@ import { loginUser } from "../Components/StateSlices/loginSlice";
 
 export default function LoginForm() {
     const dispatch = useDispatch()
-    const {status, token, error} = useSelector(state => state.login)
+    const {status, id, error} = useSelector(state => state.login)
     const navigate = useNavigate()
     useEffect(() => {
-        if (token) {
-            console.log(token)
-            // Possibly change to cookies instead of LocalStorage
-            localStorage.setItem("token", token)
+        if (id) {
             navigate("/")
         }
-    }, [token])
+    }, [id])
     const TextInput = ({label, ...props}) => {
         const [field, meta] = useField(props)
         return (

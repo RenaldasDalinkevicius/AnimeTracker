@@ -121,7 +121,7 @@ gap: 2em;
 margin-top: auto;
 `
 export default function Entry(props) {
-    const {loggedInUser} = useSelector(state => state.login)
+    const {id} = useSelector(state => state.login)
     const [loading, setLoading] = useState(true)
     const [change, setChange] = useState(false)
     const [update, SetUpdate] = useState(false)
@@ -139,7 +139,7 @@ export default function Entry(props) {
             setLoading(true)
             const fetchData = async () => {
                 try {
-                    const res = await axios.post(`/record/getEntry/${loggedInUser.id}`, {
+                    const res = await axios.post(`/record/getEntry/${id}`, {
                         "title": title
                     })
                     setFetchData({
@@ -177,7 +177,7 @@ export default function Entry(props) {
     }
     async function updateEpisodes() {
         try {
-            const response = await axios.post(`/record/updateEntry/${loggedInUser.id}`, {
+            const response = await axios.post(`/record/updateEntry/${id}`, {
                 index: props.index,
                 episodes: fetchData.episodes
             })

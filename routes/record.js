@@ -6,6 +6,7 @@ import bcryptjs from "bcryptjs"
 import { generateToken } from "../utils/generateToken.js"
 import expressAsyncHandler from "express-async-handler"
 import {registrationValidation, loginValidation, newEntryValidation} from "../validation/validate.js"
+import jwt from "jsonwebtoken"
 
 export const recordRoutes = express.Router()
 recordRoutes.route("/record/getEntries/:id").get(expressAsyncHandler(async (req, res, next) => {
@@ -24,6 +25,22 @@ recordRoutes.route("/record/getEntries/:id").get(expressAsyncHandler(async (req,
     })
     res.json(data)
 }))
+recordRoutes.route("/record/me").get(function (req, res) {
+    try {
+        const token = req.cookies.token
+        if (!token) {
+            res.send(null)
+        }
+        const decoded = jwt.decode(token, process.env.JWT_SECRET)
+        res.send(decoded)
+    } catch(err) {
+        throw err
+    }
+})
+recordRoutes.route("/record/logout").get(function (req, res) {
+    res.clearCookie("token")
+    res.end()
+})
 recordRoutes.route("/record/login").post(expressAsyncHandler(async (req, res, next) => {
     const {error} = loginValidation(req.body)
     if (error) {
@@ -38,8 +55,11 @@ recordRoutes.route("/record/login").post(expressAsyncHandler(async (req, res, ne
         return await bcryptjs.compare(a, b)
     }
     if (user && await matchPassword(password, user.password)) {
-        res.json({
-            token: generateToken(user._id)
+        res.cookie("token", generateToken(user._id), {
+            httpOnly: true,
+            maxAge: 7*24*60*60*1000
+        }).json({
+            id: user._id
         })
     } else {
         const err = new Error("Invalid email or password")

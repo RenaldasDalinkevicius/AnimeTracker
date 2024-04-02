@@ -24,21 +24,29 @@ const EntryDiv = styled.div`
 width: 100%;
 display: grid;
 grid-template-areas:
-"picture name name trash"
-"picture episodes episodes trash";
+"picture name name"
+"picture episodes episodes";
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: repeat(2, 1fr);
 color: white;
 background-color: rgba(32,32,32,255);
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+padding: 1em;
 &: hover {
     cursor: pointer;
     background-color: rgba(20,20,20,255)
 }
 `
 const EntryNameText = styled.h2`
-margin: 1em 0 1em 1em;
+margin: 0;
 font-size: 1.25rem;
 grid-area: name;
 font-weight: 600;
+`
+const EntryEpisodes = styled.p`
+margin: 0;
+grid-area: episodes;
+font-size: 1rem;
 `
 const EntryImage = styled.img`
 height: 150px;
@@ -108,7 +116,7 @@ export default function EntryList () {
         title: "",
         index: null
     })
-    const {loggedInUser} = useSelector(state => state.login)
+    const {id} = useSelector(state => state.login)
     const update = useSelector((state) => state.updateList.bool)
     const dispatch = useDispatch()
     useEffect(() => {
@@ -116,7 +124,7 @@ export default function EntryList () {
             setLoading(true)
             const fetchData = async () => {
                 try {
-                    const res = await axios.get(`/record/getEntries/${loggedInUser.id}`)
+                    const res = await axios.get(`/record/getEntries/${id}`)
                     setData(res.data.animeList)
                     dispatch(updateListFalse())
                     setLoading(false)
@@ -132,12 +140,13 @@ export default function EntryList () {
     useEffect(() => {
         dispatch(updateListTrue())
     }, [])
+    
     const length = (arr) => arr.length
     async function deleteEntry(index) {
         const confirmResponse = confirm("Delete this entry?")
         if (confirmResponse == true) {
             try {
-                const response = await axios.post(`/record/deleteEntry/${loggedInUser.id}`, {
+                const response = await axios.post(`/record/deleteEntry/${id}`, {
                     title: data[index].title
                 })
                 alert(response.data.message)
@@ -159,6 +168,7 @@ export default function EntryList () {
         <EntryDiv onClick={() => openEntry(fetchData.title, index)}>
             <EntryImage src={String(fetchData.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
             <EntryNameText>{fetchData.title}</EntryNameText>
+            <EntryEpisodes>{`${length(fetchData.episodes)} Episodes`}</EntryEpisodes>
         </EntryDiv>
         <RemoveButton icon={faTrash} onClick={() => deleteEntry(index)}/>
     </EntryLi>

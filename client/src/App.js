@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components"
 import GlobalStyle from "./theme/globalStyle"
-import { useSelector} from "react-redux"
+import { useDispatch, useSelector} from "react-redux"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Components/Layout";
 import Intro from "./Components/Intro";
 import LoginForm from "./LoginPage/LoginForm";
 import RegisterForm from "./LoginPage/RegisterForm";
 import EntryList from "./EntryList/EntryList";
+import { useEffect } from "react";
+import { getMe } from "./Components/StateSlices/loginSlice"
 
     const MainDiv = styled.main`
     display: flex;
@@ -17,7 +19,11 @@ import EntryList from "./EntryList/EntryList";
     padding-top: 4em;
     `
 export default function App () {
-    const {loggedInUser} = useSelector(state => state.login)
+    const dispatch = useDispatch()
+    const {id} = useSelector(state => state.login)
+    useEffect(() => {
+        dispatch(getMe())
+    }, [])
     return (
         <MainDiv>
             <GlobalStyle/>
@@ -25,7 +31,7 @@ export default function App () {
                 <Layout/>
                 <Routes>
                     <Route index element={
-                        loggedInUser?
+                        id?
                             <EntryMain>
                                 <EntryList/>
                             </EntryMain>

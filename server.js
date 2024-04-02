@@ -4,7 +4,9 @@ import "./dotenvConfig.js"
 import { recordRoutes } from "./routes/record.js"
 import { connectToServer } from "./db/conn.js"
 import { globalErrorHandler } from "./middleware/errorMiddleware.js"
+import cookieParser from "cookie-parser"
 const app = express()
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 const port = process.env.PORT || 5000
 app.use(cors())
