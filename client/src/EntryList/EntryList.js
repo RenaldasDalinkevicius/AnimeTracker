@@ -13,12 +13,19 @@ list-style: none;
 height: 100%;
 width: 100%;
 margin: 0;
-padding: 0 5.5em 0 6.5em;
+padding: 0 var(--padding-sides-big);
+@media (max-width: 700px) {
+    padding: 0 var(--padding-sides-small);
+}
 `
 const EntryLi = styled.li`
-margin-top: 2em;
+margin-top: 4em;
 display: flex;
 flex-direction: row;
+@media (max-width: 700px) {
+    flex-direction: column-reverse;
+}
+
 `
 const EntryDiv = styled.div`
 width: 100%;
@@ -28,56 +35,81 @@ grid-template-areas:
 "picture episodes episodes";
 grid-template-columns: repeat(4, 1fr);
 grid-template-rows: repeat(2, 1fr);
-color: white;
-background-color: rgba(32,32,32,255);
+background-color: var(--color-primary);
+gap: 1em;
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 padding: 1em;
 &: hover {
     cursor: pointer;
-    background-color: rgba(20,20,20,255)
+    background-color: var(--color-secondary);
+}
+@media (max-width: 700px) {
+    grid-template-areas:
+    "picture picture"
+    "picture picture"
+    "name name"
+    "episodes episodes";
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
 }
 `
-const EntryNameText = styled.h2`
-margin: 0;
-font-size: 1.25rem;
+const EntryNameText = styled.h3`
+font-size: var(--font-size-big);
 grid-area: name;
-font-weight: 600;
+font-weight: var(--font-weight-header);
 `
 const EntryEpisodes = styled.p`
-margin: 0;
 grid-area: episodes;
-font-size: 1rem;
 `
 const EntryImage = styled.img`
 height: 150px;
 width: 200px;
 grid-area: picture;
 object-fit: cover;
+@media (max-width: 700px) {
+    width: 100%;
+}
 `
 const AddEntryButton = styled(FontAwesomeIcon)`
 cursor: pointer;
-width: 32px;
-height: 32px;
-padding: 1em;
-margin-left: auto;
+width: 20px;
+height: 20px;
+padding: var(--button-padding);
+margin: var(--button-margin);
 z-index: 1;
+color: var(--color-text);
+background: var(--color-accent);
+display: flex;
+cursor: pointer;
+position: fixed;
+right: 0;
+bottom: 0;
+border-radius: 50%;
+&: hover {
+    background-color: var(--color-text);
+    color: var(--color-accent);
+}
 `
 const RemoveButton = styled(FontAwesomeIcon)`
 width: 20px;
 height: 20px;
 gridArea: thrash;
 align-self: center;
-color: white;
-padding: 1em;
-margin: 1em;
-background: black;
+color: var(--color-text);
+padding: var(--button-padding);
+margin: var(--button-margin);
+background: var(--color-accent);
+margin-right: 0;
 cursor: pointer;
 border-radius: 50%;
 &: hover {
-    background-color: white;
-    color: black;
+    background-color: var(--color-text);
+    color: var(--color-accent);
 }
-
+@media (max-width: 700px) {
+    margin: var(--button-margin);
+    margin-left: auto;
+}
 `
 const Empty = styled.div`
 display: flex;
@@ -86,26 +118,7 @@ justify-content: center;
 align-content: center;
 `
 const EmptyText = styled.p`
-color: inherit;
-`
-const EntryButton = styled.button`
-display: flex;
-cursor: pointer;
-position: fixed;
-right: 0;
-bottom: 0;
-border: none;
-height: 4rem;
-width: 4rem;
-margin: 2em;
-border-radius: 50%;
-padding: 0.5em;
-background-color: black;
-color: white;
-&: hover {
-    background-color: white;
-    color: black;
-}
+color: var(--color-text);
 `
 export default function EntryList () {
     const [data, setData] = useState([])
@@ -184,9 +197,7 @@ export default function EntryList () {
     return (
         <EntryUl>
             {EntryArr}
-            <EntryButton type="button" onClick={() => setNewEntryPopup(!newEntryPopup)}>
-                <AddEntryButton icon={faPlus} style={{margin: "auto auto", padding: "0", color: "inherit"}}/>
-            </EntryButton>
+            <AddEntryButton icon={faPlus} onClick={() => setNewEntryPopup(!newEntryPopup)}/>
             {newEntryPopup&&<NewEntryMenu toggle={() => setNewEntryPopup(!newEntryPopup)}/>}
             {entryPopup&&<Entry title={entryTitle.title} index={entryTitle.index} toggle={() => setEntryPopup(!entryPopup)}/>}
         </EntryUl>

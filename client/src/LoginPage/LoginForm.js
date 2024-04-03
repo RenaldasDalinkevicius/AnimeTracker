@@ -13,12 +13,12 @@ import { loginUser } from "../Components/StateSlices/loginSlice";
     `
     const FormLabel = styled.label`
     text-align: center;
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     margin: 0 0 0.5em 0;
-    font-weight: 600;
+    font-weight: var(--font-weight-header);
     `
     const FormInput = styled.input`
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     border: none;
     padding: 1em;
     margin: 0 0 0.5em 0;
@@ -28,12 +28,13 @@ import { loginUser } from "../Components/StateSlices/loginSlice";
     font-weight: 300;
     margin: 0;
     text-align: center;
-    font-size: 1.125rem;
+    font-size: var(--font-size-normal);
     `
     const StyledForm = styled(Form)`
     min-height: 100vh;
     background-color: inherit;
     display: flex;
+    margin-top: 4em;
     `
     const MainWrapper = styled.div`
     flex: 1 1 auto;
@@ -47,19 +48,19 @@ import { loginUser } from "../Components/StateSlices/loginSlice";
     text-transform: uppercase;
     `
     const Error = styled.p`
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     color: red;
-    font-weight: 600;
+    font-weight: var(--font-weight-header);
     `
     const Submit = styled.button`
     border: 3px solid;
     padding: 1em;
     cursor: pointer;
     font-family: inherit;
-    font-weight: 600;
-    font-size: 1.25rem;
+    font-weight: var(--font-weight-header);
+    font-size: var(--font-size-big);
     margin: 0.5em 0 1em 0;
-    color: inherit;
+    color: var(--color-text);
     background: inherit;
     transition: transform 200ms ease-in-out;
     &:hover, &:focus {
@@ -68,11 +69,11 @@ import { loginUser } from "../Components/StateSlices/loginSlice";
     `
     const Register = styled.p`
     margin: 0;
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     `
     const LinkRegister = styled(Link)`
-    font-weight: 600;
-    color: white;
+    font-weight: var(--font-weight-header);
+    color: var(--color-text);
     `
 
 export default function LoginForm() {

@@ -14,10 +14,10 @@ import { useNavigate } from "react-router-dom"
     text-align: center;
     font-size: 1.25rem;
     margin: 0 0 0.5em 0;
-    font-weight: 600;
+    font-weight: var(--font-weight-header);
     `
     const FormInput = styled.input`
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     border: none;
     padding: 1em;
     margin: 0 0 0.5em 0;
@@ -27,13 +27,14 @@ import { useNavigate } from "react-router-dom"
     font-weight: 300;
     margin: 0;
     text-align: center;
-    font-size: 1.125rem;
+    font-size: var(--font-size-normal);
     `
     const StyledForm = styled(Form)`
     min-height: 100vh;
     background-color: inherit;
     color: inherit;
     display: flex;
+    margin-top: 4em;
     `
     const MainWrapper = styled.div`
     flex: 1 1 auto;
@@ -54,8 +55,8 @@ import { useNavigate } from "react-router-dom"
     padding: 1em;
     cursor: pointer;
     font-familiy: inherit;
-    font-weight: 600;
-    font-size: 1.25rem;
+    font-weight: var(--font-weight-header);
+    font-size: var(--font-size-big);
     margin: 0.5em 0 1em 0;
     border-image: inherit 1;
     background: inherit;
@@ -66,9 +67,9 @@ import { useNavigate } from "react-router-dom"
     };
     `
     const Error = styled.p`
-    font-size:1.25rem;
+    font-size:var(--font-size-big);
     color: red;
-    font-weight: 600;
+    font-weight: var(--font-weight-header);
     `
 
 export default function RegisterForm() {

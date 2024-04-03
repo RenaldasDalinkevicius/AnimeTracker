@@ -9,21 +9,24 @@ const PopUpBackground = styled.div`
 position: fixed;
 background-color: rgb(0,0,0,0.9);
 width: 100%;
-height: 100%;
+height: 100vh;
 z-index: 2;
 left: 0;
 top: 0;
 display: flex;
-padding: 0 6.5em 2em 6.5em;
+padding: 0 var(--padding-sides-big);
 flex-direction: column;
-color: white;
+@media (max-width: 700px) {
+    padding: var(--padding-sides-small);
+}
 `
 const StyledIcon = styled(FontAwesomeIcon)`
 cursor: pointer;
-width: 32px;
-height: 32px;
-padding: 1em;
-color: white;
+width: 20px;
+height: 20px;
+padding: var(--button-padding);
+margin: var(--button-margin);
+color: var(--color-text);
 margin-left: auto;
 `
 const Empty = styled.div`
@@ -33,59 +36,68 @@ justify-content: center;
 align-content: center;
 `
 const EmptyText = styled.p`
-color: inherit;
+color: var(--color-text);
 `
 const EntryDiv = styled.div`
 display: grid;
 grid-template-areas:
-"picture all all all"
+"picture title title title"
 "picture episodes episodes episodes"
 "picture episodes episodes episodes"
-"title other other other";
+"all all other other";
 grid-template-columns: repeat(4, 1fr);
 grid-template-rows: repeat(4, 1fr);
-grid-gap: 2em;
-margin-top: 1em;
+grid-gap: 1em;
 width: 100%;
 height: 100%;
+overflow: hidden;
+@media (max-width: 700px) {
+    display: flex;
+    flex-direction: column;
+};
 `
-const EntryTitle = styled.h2`
-margin: 0;
-font-size: 1.25rem;
-font-weight: 600;
-grid-area: title
+const EntryTitle = styled.h3`
+font-weight: var(--font-weight-header);
+grid-area: title;
 `
 const EntryImage = styled.img`
 height: 100%;
 width: 100%;
 object-fit: fill;
 grid-area: picture;
+@media (max-width: 700px) {
+    height: 200px;
+};
+@media (max-height: 700px) {
+    height: 100px
+};
 `
 const Episodes = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: wrap;
-gap: 2em;
 height: 100%;
 width: 100%;
 grid-area: episodes;
 align-content: flex-start;
 overflow: scroll;
+@media (max-width: 700px) {
+    justify-content: center;
+};
 `
 const Episode = styled.button`
-padding: 0;
-margin: 0;
-height: 50px;
-width: 100px;
+padding: var(--button-padding);
+margin: var(--button-margin);
+font-size: var(--font-size-normal);
 text-decoration: none;
-background-color: rgba(32,32,32,255);
+background-color: var(--color-primary);
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-color: white;
+color: var(--color-text);
 border: none;
 border-bottom: 4px solid ${props => props.watched?"green":"red"};
 &: hover {
     cursor: pointer;
-    background-color: rgba(20,20,20,255);
+    background-color: var(--color-secondary);
 }
 `
 const UpdateEpisodesWrapper = styled.div`
@@ -94,22 +106,29 @@ flex-direction: row;
 width: 100%;
 grid-area: other;
 justify-content: flex-end;
-gap: 2em;
+@media (max-width: 350px) {
+    flex-direction: column;
+};
+@media (max-width: 700px) {
+    justify-content: center;
+};
 `
 const Button = styled.button`
-height: 50px;
-width: 150px;
+height: fit-content;
+width: fit-content;
+font-size: var(--font-size-normal);
+font-weight: var(--font-size-normal);
 text-decoration: none;
-background-color: rgba(32,32,32,255);
+background-color: var(--color-primary);
 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-color: white;
+color: var(--color-text);
 border: none;
-padding: 1em;
-margin: 0.5em 1em;
+padding: var(--button-padding);
+margin: var(--button-margin);
 &: hover {
     cursor: pointer;
-    background-color: rgba(20,20,20,255);
-}
+    background-color: var(--color-secondary);
+};
 `
 const UpdateAllWrapper = styled.div`
 display: flex;
@@ -117,8 +136,12 @@ flex-direction: row;
 width: 100%;
 grid-area: all;
 justify-content: flex-end;
-gap: 2em;
-margin-top: auto;
+@media (max-width: 700px) {
+    justify-content:center;
+};
+@media (max-width: 350px) {
+    flex-direction: column;
+};
 `
 export default function Entry(props) {
     const {id} = useSelector(state => state.login)
@@ -202,14 +225,14 @@ export default function Entry(props) {
             <StyledIcon icon={faX} onClick={props.toggle}/>
             {!loading?
             <EntryDiv>
-                <UpdateAllWrapper>
-                    <Button onClick={() => handleAllEpisodes(true)}>All watched</Button>
-                    <Button onClick={() => handleAllEpisodes(false)}>All not watched</Button>
-                </UpdateAllWrapper>
                 <EntryImage src={String(fetchData.img)}/>
                 <EntryTitle>
                     {fetchData.title}
                 </EntryTitle>
+                <UpdateAllWrapper>
+                    <Button onClick={() => handleAllEpisodes(true)}>All watched</Button>
+                    <Button onClick={() => handleAllEpisodes(false)}>All not watched</Button>
+                </UpdateAllWrapper>
                 <Episodes>
                     {episodesArr}
                 </Episodes>

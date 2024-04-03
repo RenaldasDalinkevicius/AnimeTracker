@@ -15,21 +15,25 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
     left: 0;
     top: 0;
     display: flex;
-    padding: 0 6.5em;
+    padding: 0 var(--padding-sides-big);
     flex-direction: column;
     color: white;
+    @media (max-width: 700px) {
+        padding: 0 var(--padding-sides-small);
+    }
     `
     const StyledIcon = styled(FontAwesomeIcon)`
     cursor: pointer;
-    width: 32px;
-    height: 32px;
-    padding: 1em;
-    color: white;
+    width: 20px
+    height: 20px;
+    padding: var(--button-padding);
+    margin: var(--button-margin);
+    color: var(--color-text);
     margin-left: auto;
     `
     const Input = styled.input`
     border-radius: 5px;
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     padding: 0.5em;
     margin: 1em 0;
     border: none;
@@ -52,35 +56,46 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
     "picture name"
     "picture episodes";
     color: white;
-    background-color: rgba(32,32,32,255);
+    background-color: var(--color-primary);
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     margin: 1em 0;
     justify-items: start;
     &:hover {
         cursor: pointer;
-        background-color: rgba(20,20,20,255)
-    }
+        background-color: var(--color-secondary);
+    };
+    @media (max-width: 500px) {
+        grid-template-columns: 150px auto;
+    };
+    @media (max-width: 300px) {
+        grid-template-columns: 100px auto;
+    };
     `
-    const ResultNameText = styled.h2`
+    const ResultNameText = styled.h3`
     margin: 1em 0 1em 1em;
-    font-size: 1.25rem;
+    font-size: var(--font-size-big);
     grid-area: name;
-    font-weight: 600;
+    font-weight: var(--font-weight-header);
     `
-    const ResultEpisodesText = styled.h3`
+    const ResultEpisodesText = styled.p`
     margin: 1em 0 1em 1em;
-    font-size: 1.25rem;
+    font-size: var(--font-size-normal);
     grid-area: episodes;
-    font-weight: 600;
     `
     const ResultImage = styled.img`
     height: 150px;
     width: 200px;
     grid-area: picture;
     object-fit: cover;
+    @media (max-width: 500px) {
+        width: 150px;
+    };
+    @media (max-width: 300px) {
+        width: 100px;
+    };
     `
     const ErrorMessage = styled.p`
-    font-size: 1.2rem;
+    font-size: var(--font-size-normal);
     color: red;
     `
 export default function NewEntryMenu(props) {
