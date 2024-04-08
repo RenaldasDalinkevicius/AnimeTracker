@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faX } from "@fortawesome/free-solid-svg-icons"
+import { faX, faSearch } from "@fortawesome/free-solid-svg-icons"
 import {useDispatch, useSelector} from "react-redux"
 import {newEntry, resetStatus} from "../../Components/StateSlices/newEntrySlice";
 import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
@@ -98,6 +98,12 @@ import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
     font-size: var(--font-size-normal);
     color: red;
     `
+    const InputWrapper = styled.div`
+    display: flex;
+    flex-direciton: row;
+    gap: 2em;
+    `
+
 export default function NewEntryMenu(props) {
     const {status, posted, error} = useSelector(state => state.newEntry)
     const { id } = useSelector(state => state.login)
@@ -114,7 +120,7 @@ export default function NewEntryMenu(props) {
                     total
                     currentPage
                 }
-                media(id: $id, search: $search, sort: POPULARITY_DESC) {
+                media(id: $id, search: $search, sort: POPULARITY_DESC, type: ANIME) {
                     id
                     type
                     title {
@@ -131,7 +137,7 @@ export default function NewEntryMenu(props) {
         }
         `
         let variables = {
-            search: keyword,
+            search: JSON.stringify(keyword),
             page: 1,
             perPage: 10
         }
@@ -161,9 +167,6 @@ export default function NewEntryMenu(props) {
         !keyword==""&&setLoading(true)
         !keyword==""&&await fetch(url, options).then(handleResponse).then(handleData).catch(handleError).finally(finalState)
     }
-    useEffect(() => {
-        !loading&&fetchAnimeInfo()
-    }, [keyword])
     function newEntryF(selected) {
         const selectedValues = {
             "userId": id,
@@ -197,11 +200,14 @@ export default function NewEntryMenu(props) {
     return (
         <PopUpBackground>
             <StyledIcon icon={faX} onClick={props.toggle}/>
-            <Input 
-                autoComplete="off"
-                placeholder="Search for an anime"
-                onChange={(e) => setKeyword(e.target.value)}
-            />
+            <InputWrapper>
+                <Input 
+                    autoComplete="off"
+                    placeholder="Search for an anime"
+                    onChange={(e) => setKeyword(e.target.value)}
+                />
+                <StyledIcon icon={faSearch} onClick={() => {!loading&&fetchAnimeInfo()}}/>
+            </InputWrapper>
             <ResultWrapper>
                 {fetchError?<ErrorMessage>{fetchError}</ErrorMessage>:resultArr}
             </ResultWrapper>
