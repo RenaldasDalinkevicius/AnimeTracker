@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faX } from "@fortawesome/free-solid-svg-icons"
-import { useSelector} from "react-redux"
+import { useDispatch, useSelector} from "react-redux"
 import axios from "axios"
 
 const PopUpBackground = styled.div`
@@ -144,6 +144,7 @@ justify-content: flex-end;
 };
 `
 export default function Entry(props) {
+    const dispatch = useDispatch()
     const {id} = useSelector(state => state.login)
     const [loading, setLoading] = useState(true)
     const [change, setChange] = useState(false)
@@ -206,6 +207,7 @@ export default function Entry(props) {
             })
             SetUpdate(true)
             setChange(false)
+            dispatch(updateListTrue())
             alert(response.data.message)
         } catch(error) {
             alert(error.message)

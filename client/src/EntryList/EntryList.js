@@ -176,12 +176,16 @@ export default function EntryList () {
         })
         setEntryPopup(!entryPopup)
     }
+    function countEpisodes (arr) {
+        const watchedEpisodes = arr.filter(episode => episode.watched === true)
+        return watchedEpisodes.length
+    }
     const EntryArr = !loading?!length(data)<=0?data.map((fetchData, index) => {
         return <EntryLi key={index}>
         <EntryDiv onClick={() => openEntry(fetchData.title, index)}>
-            <EntryImage src={String(fetchData.imageUrl)} onError={(event) => event.target.style.display = "none"}/>
+            <EntryImage onError={(event) => event.target.style.display = "none"}/>
             <EntryNameText>{fetchData.title}</EntryNameText>
-            <EntryEpisodes>{`${length(fetchData.episodes)} Episodes`}</EntryEpisodes>
+            <EntryEpisodes>{`Watched ${countEpisodes(fetchData.episodes)} out of${length(fetchData.episodes)} Episodes`}</EntryEpisodes>
         </EntryDiv>
         <RemoveButton icon={faTrash} onClick={() => deleteEntry(index)}/>
     </EntryLi>
