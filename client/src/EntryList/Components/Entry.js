@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faX } from "@fortawesome/free-solid-svg-icons"
 import { useDispatch, useSelector} from "react-redux"
 import axios from "axios"
+import { updateListTrue } from "../../Components/StateSlices/updateListSlice";
 
 const PopUpBackground = styled.div`
 position: fixed;

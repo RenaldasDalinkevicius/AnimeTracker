@@ -183,9 +183,9 @@ export default function EntryList () {
     const EntryArr = !loading?!length(data)<=0?data.map((fetchData, index) => {
         return <EntryLi key={index}>
         <EntryDiv onClick={() => openEntry(fetchData.title, index)}>
-            <EntryImage onError={(event) => event.target.style.display = "none"}/>
+            <EntryImage src={fetchData.imageUrl} onError={(event) => event.target.style.display = "none"}/>
             <EntryNameText>{fetchData.title}</EntryNameText>
-            <EntryEpisodes>{`Watched ${countEpisodes(fetchData.episodes)} out of${length(fetchData.episodes)} Episodes`}</EntryEpisodes>
+            <EntryEpisodes>{`Watched ${countEpisodes(fetchData.episodes)} out of ${length(fetchData.episodes)} Episodes`}</EntryEpisodes>
         </EntryDiv>
         <RemoveButton icon={faTrash} onClick={() => deleteEntry(index)}/>
     </EntryLi>
